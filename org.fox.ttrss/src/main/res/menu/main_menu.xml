@@ -25,7 +25,7 @@
             <item
                 android:id="@+id/go_offline"
                 android:icon="@drawable/ic_cloud_light"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/go_offline"/>            
             <item
                 android:id="@+id/update_feeds"
@@ -41,17 +41,17 @@
             <item
                 android:id="@+id/update_headlines"
                 android:icon="@drawable/ic_refresh_light" 
-                app:showAsAction=""
+                app:showAsAction="ifRoom"
                 android:title="@string/update_headlines"/>
             <item
                 android:id="@+id/search"
                 android:icon="@drawable/ic_search_light"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/search"/>
             <item
                 android:id="@+id/headlines_mark_as_read"
                 android:icon="@drawable/ic_accept_light"
-                app:showAsAction=""
+                app:showAsAction="ifRoom"
                 android:title="@string/headlines_mark_as_read"/>
             <item
                 android:id="@+id/headlines_select"
@@ -62,7 +62,7 @@
             <item
                 android:id="@+id/headlines_toggle_sort_order"
                 android:icon="@drawable/ic_action_sort_by_size"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/toggle_sort_order"/>
 
             <item
@@ -106,6 +106,11 @@
         </group> -->
         <group android:id="@+id/menu_group_article" >
             <item
+                android:id="@+id/set_unread"
+                android:icon="@drawable/ic_unread_light"
+                app:showAsAction="ifRoom"
+                android:title="@string/article_set_unread" />
+            <item
                 android:id="@+id/toggle_marked"
                 android:icon="@drawable/ic_unimportant_light"
                 app:showAsAction="ifRoom"
@@ -113,7 +118,7 @@
             <item
                 android:id="@+id/toggle_published"
                 android:icon="@drawable/ic_menu_unpublished_light"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/article_toggle_published"/>
             <item
                 android:id="@+id/toggle_attachments"
@@ -123,7 +128,7 @@
             <item
                 android:id="@+id/share_article"
                 android:icon="@drawable/ic_share_light"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/share_article"/>
             <!--  android:actionProviderClass="android.widget.ShareActionProvider" -->
             <item
