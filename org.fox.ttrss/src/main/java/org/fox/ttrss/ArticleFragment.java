@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -47,7 +48,7 @@ public class ArticleFragment extends Fragment  {
 
 	private SharedPreferences m_prefs;
 	private Article m_article;
-	private OnlineActivity m_activity;
+	private HeadlinesActivity m_activity;
     private WebView m_web;
     protected View m_customView;
     protected FrameLayout m_customViewContainer;
@@ -86,6 +87,8 @@ public class ArticleFragment extends Fragment  {
 
             if (m_fab != null) m_fab.setVisibility(View.GONE);
 
+            m_activity.showSidebar(false);
+
             m_callback = callback;
         }
 
@@ -113,6 +116,7 @@ public class ArticleFragment extends Fragment  {
 
             m_customView = null;
 
+            m_activity.showSidebar(true);
         }
     }
 
@@ -361,13 +365,20 @@ public class ArticleFragment extends Fragment  {
                         for (Element video : videos)
                             video.remove();
 
+                        videos = doc.select("iframe");
+
+                        for (Element video : videos)
+                            video.remove();
+
                         articleContent = doc.toString();
                     }
                 } else {
-                    ws.setJavaScriptEnabled(true);
-                    m_chromeClient = new FSVideoChromeClient(view);
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        ws.setJavaScriptEnabled(true);
+                        m_chromeClient = new FSVideoChromeClient(view);
 
-                    m_web.setWebChromeClient(m_chromeClient);
+                        m_web.setWebChromeClient(m_chromeClient);
+                    }
                 }
 
 				if (m_prefs.getBoolean("justify_article_text", true)) {
@@ -431,7 +442,7 @@ public class ArticleFragment extends Fragment  {
 						//
 					}
 
-                    if (savedInstanceState == null && !m_activity.isCompatMode())
+                    if (savedInstanceState == null)
                         m_web.loadDataWithBaseURL(baseUrl, content, "text/html", "utf-8", null);
                     else
                         m_web.restoreState(savedInstanceState);
@@ -558,7 +569,7 @@ public class ArticleFragment extends Fragment  {
 		super.onAttach(activity);		
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		m_activity = (OnlineActivity)activity;
+		m_activity = (HeadlinesActivity)activity;
 
 	}
 }

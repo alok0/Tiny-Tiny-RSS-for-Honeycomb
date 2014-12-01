@@ -39,6 +39,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import org.fox.ttrss.CommonActivity;
 import org.fox.ttrss.GlobalState;
 import org.fox.ttrss.R;
 import org.fox.ttrss.util.TypefaceCache;
@@ -697,8 +698,15 @@ public class OfflineHeadlinesFragment extends Fragment implements OnItemClickLis
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
 				} else {
-					String excerpt = Jsoup.parse(article.getString(article.getColumnIndex("content"))).text(); 
-					
+                    String articleContent = article.getString(article.getColumnIndex("content"));
+
+                    String tmp = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
+                            articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
+
+                    String excerpt = Jsoup.parse(tmp).text();
+
+                    if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH) excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
+
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);
 				}

@@ -77,7 +77,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
     public static final int HEADLINES_REQUEST_SIZE = 30;
 	public static final int HEADLINES_BUFFER_MAX = 500;
-	
+
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private Feed m_feed;
@@ -554,6 +554,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 					put("offset", String.valueOf(0));
 					put("skip", String.valueOf(fskip));
 					put("include_nested", "true");
+                    put("has_sandbox", "true");
 					put("order_by", m_activity.getSortMode());
 					
 					if (isCat) put("is_cat", "true");
@@ -782,15 +783,8 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				adjustTitleTextView(article.score, holder.titleView, position);
 			}
 
-			
-			
 			if (holder.feedTitleView != null) {				
 				if (article.feed_title != null && (m_feed.is_cat || m_feed.id < 0)) {
-					
-					/* if (article.feed_title.length() > 20)
-						ft.setText(article.feed_title.substring(0, 20) + "...");
-					else */
-					
 					holder.feedTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineSmallFontSize);
 					holder.feedTitleView.setText(article.feed_title);
 					
@@ -834,13 +828,21 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 				});
 			}
 
-			String articleContent = article.content != null ? article.content : "";
+            String articleContent = article.content != null ? article.content : "";
 
-			if (holder.excerptView != null) {
+            String articleContentReduced = articleContent.length() > CommonActivity.EXCERPT_MAX_QUERY_LENGTH ?
+                    articleContent.substring(0, CommonActivity.EXCERPT_MAX_QUERY_LENGTH) : articleContent;
+
+            Document articleDoc = Jsoup.parse(articleContentReduced);
+
+            if (holder.excerptView != null) {
 				if (!m_prefs.getBoolean("headlines_show_content", true)) {
 					holder.excerptView.setVisibility(View.GONE);
-				} else {
-					String excerpt = Jsoup.parse(articleContent).text(); 
+				} else if (articleDoc != null) {
+                    String excerpt = articleDoc.text();
+
+                    if (excerpt.length() > CommonActivity.EXCERPT_MAX_LENGTH)
+                        excerpt = excerpt.substring(0, CommonActivity.EXCERPT_MAX_LENGTH) + "…";
 					
 					holder.excerptView.setTextSize(TypedValue.COMPLEX_UNIT_SP, headlineFontSize);
 					holder.excerptView.setText(excerpt);
@@ -853,14 +855,10 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                 if (holder.flavorImageView != null && showFlavorImage) {
                     holder.flavorImageArrow.setVisibility(View.GONE);
 
-                    Document doc = Jsoup.parse(articleContent);
-
                     boolean loadableImageFound = false;
 
-                    if (doc != null) {
-                        //Element img = doc.select("img").first();
-
-                        final Elements imgs = doc.select("img");
+                    if (articleDoc != null) {
+                        final Elements imgs = articleDoc.select("img");
                         Element img = null;
 
                         for (Element tmp : imgs) {
@@ -879,6 +877,7 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
 
                         if (img != null) {
                             String imgSrc = img.attr("src");
+                            final String imgSrcFirst = imgSrc;
 
                             // retarded schema-less urls
                             if (imgSrc.indexOf("//") == 0)
@@ -893,26 +892,13 @@ public class HeadlinesFragment extends Fragment implements OnItemClickListener, 
                             holder.flavorImageView.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    ArrayList<String> imgsList = new ArrayList<String>();
-
-                                    for (Element img : imgs) {
-                                        String imgSrc = img.attr("src");
-
-                                        if (imgSrc.indexOf("//") == 0)
-                                            imgSrc = "http:" + imgSrc;
-
-                                        imgsList.add(imgSrc);
-                                    }
 
                                     Intent intent = new Intent(m_activity, ArticleImagesPagerActivity.class);
-                                    intent.putExtra("urls", imgsList);
+                                    intent.putExtra("firstSrc", imgSrcFirst);
                                     intent.putExtra("title", article.title);
                                     intent.putExtra("content", article.content);
 
                                     startActivityForResult(intent, 0);
-                                    //m_activity.overridePendingTransition(android.R.anim.fade_in, 0);
-
-
                                 }
                             });
 
