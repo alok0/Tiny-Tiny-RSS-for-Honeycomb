@@ -1025,9 +1025,8 @@ public class OnlineActivity extends CommonActivity {
 
                 if (hf != null) hf.notifyUpdated();
 
-                // close article
+                // close article? does this even work?
                 ap.getFragmentManager().popBackStackImmediate();
-                ap.getFragmentManager().beginTransaction().remove(ap).commit();
             }
             return true;
 		case R.id.set_labels:
