@@ -39,29 +39,29 @@
             <item
                 android:id="@+id/search"
                 android:icon="@drawable/ic_magnify"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/search"/>
             <item
                 android:id="@+id/headlines_mark_as_read"
                 android:icon="@drawable/ic_check_all"
-                app:showAsAction=""
+                app:showAsAction="ifRoom"
                 android:title="@string/headlines_mark_as_read"/>
             <item
                 android:id="@+id/headlines_select"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:icon="@drawable/ic_select"
                 android:title="@string/headlines_select"/>
 
             <item
                 android:id="@+id/headlines_toggle_sort_order"
                 android:icon="@drawable/ic_sort"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/toggle_sort_order"/>
 
             <item
                 android:id="@+id/headlines_view_mode"
                 android:icon="@drawable/ic_filter_outline"
-                app:showAsAction=""
+                app:showAsAction="ifRoom"
                 android:title="@string/headlines_view_mode"/>
         </group>
         <group android:id="@+id/menu_group_article" >
@@ -73,7 +73,7 @@
             <item
                 android:id="@+id/toggle_published"
                 android:icon="@drawable/ic_rss_box"
-                app:showAsAction="ifRoom"
+                app:showAsAction=""
                 android:title="@string/article_toggle_published"/>
             <item
                 android:id="@+id/toggle_attachments"
